@@ -4,6 +4,7 @@ const back=[
     {
         path:'/back',
         component:BackendLayout,
+        redict:'/back/dashboard',
         children:[
             {
             path:'dashboard',

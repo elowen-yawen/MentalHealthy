@@ -29,6 +29,9 @@
 <script setup>
 import { reactive, ref } from 'vue';
 import { login } from '@/api/admin';
+import { useRouter } from 'vue-router';
+import { da } from 'element-plus/es/locale/index.mjs';
+const router=useRouter()
 const ruleFormRef = ref()
 const rules = reactive({
     username: [
@@ -57,6 +60,10 @@ const submitForm = async (formEl) => {
             localStorage.setItem('token', data.token);
             localStorage.setItem('userInfo', JSON.stringify(data.userInfo));
             // 这里建议加一个路由跳转，比如：router.push('/')
+            console.log(data)
+            if(data.roleType=="2"){
+                router.push('/back/dashboard')
+            }
         } else {
             console.error("登录失败：未获取到 token");
         }

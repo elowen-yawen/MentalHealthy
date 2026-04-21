@@ -9,17 +9,17 @@
             <el-row :gutter="24">
                 <el-col :span="p.span" v-for="p in formItemAttr" :key="p.title">
                     <el-form-item :label="p.title" :prop="p.prop">
-                        <component :is="p.comp" :placeholder="p.placeholder" v-model="formData[p.prop]">
+                        <component :is="p.comp" :placeholder="p.placeholder" v-model="formData[p.prop]" style="width: 100%">
                             <template v-if="p.comp == 'elSelect'">
                                 <!-- v-show是通过修改display的属性值来进行的，但是template并不会生成真实的dom,
                          所以两者相互结合无效 -->
-                                <el-option v-for="i in p.options" :label="i" :value="i" />
+                                <el-option v-for="i in p.options" :key="i.value" :label="i.label" :value="i.value" />
                             </template>
                         </component>
                     </el-form-item>
                 </el-col>
                 <el-col>
-                    <el-button type="primary" @click="handleSearch(e)">提交</el-button>
+                    <el-button type="primary" @click="handleSearch">提交</el-button>
                     <el-button @click="handleReset(ruleFormRef)">重置</el-button>
                 </el-col>
             </el-row>
@@ -49,7 +49,7 @@ const formItemAttr = computed(() => {
     });
     return props.formItem
 })
-const handleSearch = (e) => {
+const handleSearch = () => {
     console.log(formData)
     emit('search', formData)
 }

@@ -26,8 +26,9 @@
     </el-dialog>
 </template>
 <script setup>
-import { ref, reactive, computed } from 'vue';
+import { ref, reactive, computed ,updated} from 'vue';
 import { ElMessage } from 'element-plus';
+//关于elmessage的使用
 const prop = defineProps(['dialogVisible', 'categories'])
 const emit = defineEmits(['update:visiblity'])
 const handleClose = () => {

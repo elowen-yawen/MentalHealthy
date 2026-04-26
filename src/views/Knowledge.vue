@@ -2,7 +2,7 @@
     <div class="container">
         <TopForm title="知识文章" :formItem="formItem" @search="handleSearch">
             <template #buttons>
-                <el-button type="primary" @click="dialogVisible=true">新增</el-button>
+                <el-button type="primary" @click="handleAdd">新增</el-button>
             </template>
         </TopForm>
     </div>
@@ -32,20 +32,26 @@
             <el-table-column prop="favoriteCount" label="阅读量" width="80" />
             <el-table-column prop="createdAt" label="发布时间" width="180" />
             <el-table-column label="分类" width="180" fixed="right">
-                <el-button type="primary" link>
-                    编辑
-                </el-button>
-                <el-button type="warning" link>
-                    发布
-                </el-button>
-                <el-button type="danger" link>
-                    删除
-                </el-button>
+
+                <template #default="scope">
+                    <el-button type="primary" link @click="handleEdit(scope.row)">
+                        编辑
+                    </el-button>
+                    <el-button type="warning" link>
+                        发布
+                    </el-button>
+                    <el-button type="danger" link>
+                        删除
+                    </el-button>
+                </template>
+
+
             </el-table-column>
         </el-table>
         <div class="example-pagination-block">
             <el-pagination layout="prev, pager, next" :total="pages.total" :size="pages.size" />
-            <ArticleDialog :dialogVisible="dialogVisible" @update:visiblity="handleVisibility" :categories="categories"/>
+            <ArticleDialog :dialogVisible="dialogVisible" @update:visiblity="handleVisibility"
+                :categories="categories" :editData="editData"/>
 
         </div>
     </div>
@@ -56,9 +62,9 @@ import { categoryTree, articlePage } from '@/api/admin';
 import { onMounted, ref, reactive, computed } from 'vue';
 import ArticleDialog from '@/components/ArticleDialog.vue';
 const tableData = ref([])
-const dialogVisible=ref(false)
-const handleVisibility=(vs)=>{
-    dialogVisible.value=vs
+const dialogVisible = ref(false)
+const handleVisibility = (vs) => {
+    dialogVisible.value = vs
 }
 const formItem = [{
     comp: 'elInput',
@@ -126,6 +132,15 @@ onMounted(async () => {
     console.log(categories)
     console.log(categoryMap)
 })
+const editData=ref(null)
+const handleEdit = (e) => {
+    editData.value=e
+    dialogVisible.value=true
+}
+const handleAdd=()=>{
+    dialogVisible.value = true
+    editData.value=null
+}
 </script>
 <style scoped>
 .table {

@@ -9,6 +9,13 @@ export default defineConfig({
       '@': resolve(__dirname, 'src')
     }
   },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        implementation: 'sass'
+      }
+    }
+  },
   server: {
     proxy: {
       '/api': {

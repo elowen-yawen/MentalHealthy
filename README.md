@@ -49,3 +49,60 @@ el-menu 路由模式：在 el-menu 上加 router 属性后，el-menu-item 的 in
 撑满全屏：设置 height: 100% 前提是父级（html, body, #app）必须有高度。
 
 懒人方案：直接在最外层容器使用 height: 100vh（视口高度），不依赖父级即可强制撑满屏幕。
+
+4月25日
+前端向后端传输图片音频等，需要使用new FormData（它是原生二进制传输（效率高））
+
+export function handleImageHttpRequest(file,businessInfo){
+   //formData用于文件传输,一般传输图片音频等，需要设置headers: { 'Content-Type': 'multipart/form-data' }。
+    const formdata=new FormData()
+    formdata.append('file',file)
+    formdata.append('businessType','ARTICLE')
+    formdata.append('businessId',businessInfo.businessId)
+    formdata.append('businessField','cover')
+    return service.post('/file/upload',params,{
+        headers:{
+            'Content-Type':'multipart/form-data'
+        }
+    })
+}
+
+
+
+
+UUID:核心目的都是为了在大规模、高并发的场景下，确保每一张图片都有一个绝不重复的标识符。
+
+// 模拟配合过程
+const uuid = crypto.randomUUID(); // 生成唯一 ID
+const formData = new FormData();
+formData.append('id', uuid);           // 配合：传 ID
+formData.append('file', fileInput.files[0]); // 配合：传文件
+// 发送请求
+axios.post('/api/upload', formData);
+
+
+wangeditor是类似于elementplus的组件，用于富文本编辑器的引入到项目当中。
+
+modelValue与v-model之间的关系：
+
+reactive 定义的对象直接访问即可，没有 .value 属性。且一般用于响应式定义对象
+
+
+get请求发送时需要用params进行包装，但是post请求不用
+
+注意整合数据进行发送请求的时候不要直接对数据进行修改，而是要解构赋值
+  eg:
+const submitData = {
+                ...formData,
+                tags: formData.tags.join(","), // 这里转成字符串
+                id: crypto.randomUUID() // 截图要求是 string，用 UUID 最标准
+            }
+
+
+ElMessage 是 Element Plus 库提供的一个 “全局提示”组件
+两种使用方式：
+1.手动调用
+
+2.全局配置
+
+

@@ -61,8 +61,9 @@ import { handleImageHttpRequest } from '@/api/admin';
 import { fileFinalPath } from '@/config';
 import RichTextEditor from './RichTextEditor.vue';
 import { handleNewArticle } from '@/api/admin';
+import { handleUpdateArticle } from '@/api/admin';
 const prop = defineProps(['dialogVisible', 'categories', 'editData'])
-const emit = defineEmits(['update:visiblity'])
+const emit = defineEmits(['update:visiblity', 'success'])
 const commonTags = [
     '情绪管理', '焦虑', '抑郁', '压力', '睡眠',
     '冥想', '正念', '放松', '心理健康', '自我成长',
@@ -83,6 +84,7 @@ const handleClose = () => {
 const formData = reactive({})
 watch(() => prop.editData, (newVal) => {
     if (newVal) {
+        formData.id = newVal.id
         formData.title = newVal.title
         formData.categoryId = newVal.categoryId
         formData.summary = newVal.summary
@@ -162,24 +164,31 @@ const rules = reactive({
 const handleSubmit = async () => {
     await formRef.value.validate(async (valid, fields) => {
         if (valid) {
-            // 1. 深拷贝或组装一个新的提交对象，不去污染页面上正在绑定的 formData
             const submitData = {
                 ...formData,
-                tags: formData.tags.join(","), // 这里转成字符串
-                id: crypto.randomUUID() // 截图要求是 string，用 UUID 最标准
+                tags: formData.tags.join(","),
             }
-
             console.log('最终发给后端的参数：', submitData)
 
-            try {
-                // 2. 发送新组装好的数据
+            if (!isEditor.value) {
+                submitData.id = crypto.randomUUID()
                 const res = await handleNewArticle(submitData)
                 console.log('创建成功结果：', res)
-                ElMessage.success("文章创建成功！")
-                handleClose() // 成功后关闭弹窗
-            } catch (error) {
-                console.error("请求失败：", error)
-                // 如果跳登录了，说明依然报错，请看浏览器 F12 的 Network 面板
+                if (res) {
+                    ElMessage.success("文章创建成功！")
+                }
+                console.log(submitData+"submitData")
+                emit('success', 'success')
+                handleClose()
+            } else {
+                const res = await handleUpdateArticle(submitData.id, submitData)
+                console.log(res)
+                if (res) {
+                    ElMessage.success("文章编辑成功！")
+                }
+                emit('success', 'success')
+                handleClose()
+
             }
 
         } else {

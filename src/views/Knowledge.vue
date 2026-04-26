@@ -37,10 +37,13 @@
                     <el-button type="primary" link @click="handleEdit(scope.row)">
                         编辑
                     </el-button>
-                    <el-button type="warning" link>
+                    <el-button type="warning" link v-if="scope.row.status == 0" @click="handleDownline(scope.row)">
+                        下线
+                    </el-button>
+                    <el-button type="success" link v-if="scope.row.status == 1" @click="handlePublish(scope.row)">
                         发布
                     </el-button>
-                    <el-button type="danger" link>
+                    <el-button type="danger" link @click="handleRemove(scope.row)">
                         删除
                     </el-button>
                 </template>
@@ -49,9 +52,10 @@
             </el-table-column>
         </el-table>
         <div class="example-pagination-block">
-            <el-pagination layout="prev, pager, next" :total="pages.total" :size="pages.size" />
-            <ArticleDialog :dialogVisible="dialogVisible" @update:visiblity="handleVisibility"
-                :categories="categories" :editData="editData"/>
+            <el-pagination layout="prev, pager, next" :total="pages.total" :size="pages.size"
+                :currentPage="pages.currentPage" @current-change="handleCurrentChange" />
+            <ArticleDialog :dialogVisible="dialogVisible" @update:visiblity="handleVisibility" :categories="categories"
+                :editData="editData" @success="handleSuccess" />
 
         </div>
     </div>
@@ -61,10 +65,73 @@ import TopForm from '@/components/TopForm.vue';
 import { categoryTree, articlePage } from '@/api/admin';
 import { onMounted, ref, reactive, computed } from 'vue';
 import ArticleDialog from '@/components/ArticleDialog.vue';
+import { ElMessageBox, ElMessage } from 'element-plus';
+import { handleUpdateArticle } from '@/api/admin';
+import { handleDeleteArticle } from '@/api/admin';
 const tableData = ref([])
 const dialogVisible = ref(false)
 const handleVisibility = (vs) => {
     dialogVisible.value = vs
+}
+const handleCurrentChange = (val) => {
+    pages.currentPage = val
+    handleSearch()
+}
+const handleDownline = (row) => {
+    ElMessageBox.confirm(
+        '确定要将这篇文章下线吗',
+        '注意',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(async () => {
+        row.status = 1
+        await handleUpdateArticle(row.id, row)
+        await handleSearch()
+        ElMessage({
+            type: 'success',
+            message: '文章已下线',
+        })
+    })
+}
+const handlePublish = (row) => {
+    ElMessageBox.confirm(
+        '确定要将这篇文章发布吗',
+        '注意',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(async () => {
+        row.status = 0
+        await handleUpdateArticle(row.id, row)
+        await handleSearch()
+        ElMessage({
+            type: 'success',
+            message: '文章已发布',
+        })
+    })
+}
+const handleRemove = (row) => {
+    ElMessageBox.confirm(
+        '确定要删除这篇文章吗',
+        '警告',
+        {
+            confirmButtonText: 'OK',
+            cancelButtonText: 'Cancel',
+            type: 'warning',
+        }
+    ).then(async () => {
+        await handleDeleteArticle(row.id)
+        await handleSearch()
+        ElMessage({
+            type: 'success',
+            message: '文章已删除',
+        })
+    })
 }
 const formItem = [{
     comp: 'elInput',
@@ -99,12 +166,11 @@ const formItem = [{
     }]
 }]
 const pages = reactive({
-    currentPage: 5,
-    size: 1,
+    currentPage: 1,
+    size: 10,
     total: 10
 })
 const handleSearch = async (e) => {
-    console.log(e)
     const params = {
         ...e,
         ...pages
@@ -132,14 +198,19 @@ onMounted(async () => {
     console.log(categories)
     console.log(categoryMap)
 })
-const editData=ref(null)
+const editData = ref(null)
 const handleEdit = (e) => {
-    editData.value=e
-    dialogVisible.value=true
-}
-const handleAdd=()=>{
+    editData.value = e
     dialogVisible.value = true
-    editData.value=null
+}
+const handleAdd = () => {
+    dialogVisible.value = true
+    editData.value = null
+}
+const handleSuccess = (s) => {
+    if (s == 'success') {
+        handleSearch()
+    }
 }
 </script>
 <style scoped>

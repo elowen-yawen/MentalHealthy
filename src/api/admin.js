@@ -1,5 +1,4 @@
 import service from "@/utils/request";
-import { Header } from "element-plus/es/components/table-v2/src/components/index.mjs";
 export function login(data) {
     return service.post('/user/login', data)
 }
@@ -24,4 +23,12 @@ export function handleImageHttpRequest(file, businessInfo) {
 }
 export function handleNewArticle(formData) {
     return service.post('/knowledge/article', formData)
+}
+
+export function handleUpdateArticle(id, data) {
+    return service.put(`/knowledge/article/${id}`, data)
+}
+
+export function handleDeleteArticle(id) {
+    return service.delete(`/knowledge/article/${id}`)
 }

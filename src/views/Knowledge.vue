@@ -37,7 +37,7 @@
                     <el-button type="primary" link @click="handleEdit(scope.row)">
                         编辑
                     </el-button>
-                    <el-button type="warning" link v-if="scope.row.status == 0" @click="handleDownline(scope.row)">
+                    <el-button type="warning" link v-if="scope.row.status == 0||scope.row.status == 2" @click="handleDownline(scope.row)">
                         下线
                     </el-button>
                     <el-button type="success" link v-if="scope.row.status == 1" @click="handlePublish(scope.row)">

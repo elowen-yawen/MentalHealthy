@@ -32,3 +32,15 @@ export function handleUpdateArticle(id, data) {
 export function handleDeleteArticle(id) {
     return service.delete(`/knowledge/article/${id}`)
 }
+
+export function handleGetConsultation(data){
+    return service.get('/psychological-chat/sessions',{params:data})
+}
+
+export function handleGetSessionMessage(id){
+    return service.get(`/psychological-chat/sessions/${id}/messages`)
+}
+
+export function handleEmotionPage(data){
+    return service.get('/emotion-diary/admin/page',{params:data})
+}

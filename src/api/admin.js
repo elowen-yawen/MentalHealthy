@@ -40,7 +40,10 @@ export function handleGetConsultation(data){
 export function handleGetSessionMessage(id){
     return service.get(`/psychological-chat/sessions/${id}/messages`)
 }
-
 export function handleEmotionPage(data){
     return service.get('/emotion-diary/admin/page',{params:data})
+}
+
+export function handleRemoveEmotion(id){
+    return service.delete(`/emotion-diary/admin/${id}`)
 }

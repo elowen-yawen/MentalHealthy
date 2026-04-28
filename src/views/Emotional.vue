@@ -180,6 +180,9 @@
                 </template>
             </el-dialog>
         </div>
+        <div class="pagination">
+            <el-pagination layout="prev, pager, next" :total="size" :current-page="current" />
+        </div>
     </div>
 </template>
 <script setup>
@@ -273,6 +276,7 @@ const handleRemove = (data) => {
             message: '删除成功！',
             type: 'success',
         })
+        await handleSearch()
     })
 }
 const handleReceive = (receiveData) => {

@@ -47,3 +47,6 @@ export function handleEmotionPage(data){
 export function handleRemoveEmotion(id){
     return service.delete(`/emotion-diary/admin/${id}`)
 }
+export function handleComplicateInfo(){
+    return service.get('/data-analytics/overview')
+}

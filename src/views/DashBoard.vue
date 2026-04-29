@@ -96,6 +96,19 @@
                 </el-card>
             </el-col>
         </el-row>
+        <el-row :gutter="20">
+            <el-col :span="24">
+                <el-card style="width: 100%;margin-top: 20px;">
+                    <template #header>
+                        <div class="card-container">用户活跃度趋势</div>
+                    </template>
+                    <div class="chart-content">
+                        <div ref="lastChartRef" style="width: 100%;
+                        height: 100%;"></div>
+                    </div>
+                </el-card>
+            </el-col>
+        </el-row>
     </div>
 </template>
 <script setup>
@@ -121,6 +134,7 @@ const emotionChart = ref()
 const initCharts = async () => {
     initEmotionChart()
     initconsultationChart()
+    initLastChart()
 }
 const consultationChartRef = ref()
 const initEmotionChart = () => {
@@ -230,6 +244,149 @@ const initconsultationChart = () => {
         ]
     };
     myChart.setOption(option);
+}
+const lastChartRef = ref()
+const initLastChart = () => {
+    if (!lastChartRef.value) return;
+    if (!aiData.value.consultationStats || !aiData.value.consultationStats.dailyTrend) {
+        console.warn('咨询趋势数据未就绪');
+        return;
+    }
+
+    const myChart = echarts.init(lastChartRef.value);
+    const activityData = aiData.value.userActivity
+    const option = {
+        title: {
+            text: '用户活跃度趋势',
+            textStyle: {
+                fontSize: 16,
+                fontWeight: 600,
+                color: '#2d3436'
+            },
+            left: 'center',
+            top: 10
+        },
+        tooltip: {
+            trigger: 'axis',
+            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+            borderColor: '#fab1a0',
+            borderWidth: 1,
+            textStyle: {
+                color: '#2d3436'
+            }
+        },
+        legend: {
+            data: ['活跃用户', '新增用户', '日记用户', '咨询用户'],
+            top: 40,
+            textStyle: {
+                color: '#636e72'
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            top: 80,
+            containLabel: true
+        },
+        xAxis: {
+            type: 'category',
+            data: activityData.map(item => item.date),
+            axisLine: {
+                lineStyle: {
+                    color: 'rgba(244, 162, 97, 0.3)'
+                }
+            },
+            axisLabel: {
+                color: '#636e72'
+            }
+        },
+        yAxis: {
+            type: 'value',
+            axisLabel: {
+                color: '#636e72'
+            },
+            axisLine: {
+                lineStyle: {
+                    color: 'rgba(244, 162, 97, 0.3)'
+                }
+            },
+            splitLine: {
+                lineStyle: {
+                    color: 'rgba(244, 162, 97, 0.1)'
+                }
+            }
+        },
+        series: [
+            {
+                name: '活跃用户',
+                type: 'line',
+                data: activityData.map(item => item.activeUsers),
+                smooth: true,
+                lineStyle: {
+                    width: 3,
+                    color: '#a29bfe'
+                },
+                itemStyle: {
+                    color: '#a29bfe'
+                },
+                areaStyle: {
+                    color: {
+                        type: 'linear',
+                        x: 0,
+                        y: 0,
+                        x2: 0,
+                        y2: 1,
+                        colorStops: [
+                            { offset: 0, color: 'rgba(162, 155, 254, 0.4)' },
+                            { offset: 1, color: 'rgba(162, 155, 254, 0.1)' }
+                        ]
+                    }
+                }
+            },
+            {
+                name: '新增用户',
+                type: 'line',
+                data: activityData.map(item => item.newUsers),
+                smooth: true,
+                lineStyle: {
+                    width: 3,
+                    color: '#fdcb6e'
+                },
+                itemStyle: {
+                    color: '#fdcb6e'
+                }
+            },
+            {
+                name: '日记用户',
+                type: 'line',
+                data: activityData.map(item => item.diaryUsers),
+                smooth: true,
+                lineStyle: {
+                    width: 3,
+                    color: '#00b894'
+                },
+                itemStyle: {
+                    color: '#00b894'
+                }
+            },
+            {
+                name: '咨询用户',
+                type: 'line',
+                data: activityData.map(item => item.consultationUsers),
+                smooth: true,
+                lineStyle: {
+                    width: 3,
+                    color: '#fab1a0'
+                },
+                itemStyle: {
+                    color: '#fab1a0'
+                }
+            }
+        ]
+    }
+    myChart.setOption(option);
+
 }
 </script>
 <style lang="scss" scoped>

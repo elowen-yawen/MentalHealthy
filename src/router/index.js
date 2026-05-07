@@ -4,7 +4,7 @@ const back=[
     {
         path:'/back',
         component:BackendLayout,
-        redict:'/back/dashboard',
+        redirect:'/back/dashboard',
         children:[
             {
             path:'dashboard',
@@ -54,4 +54,7 @@ const router=createRouter({
     history:createWebHistory(),
     routes:back
 })
+
+//前置守卫
+
 export default router

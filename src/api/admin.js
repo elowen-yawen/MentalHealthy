@@ -50,3 +50,6 @@ export function handleRemoveEmotion(id){
 export function handleComplicateInfo(){
     return service.get('/data-analytics/overview')
 }
+export function Logout(){
+    return service.post('/user/logout')
+}

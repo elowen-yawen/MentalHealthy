@@ -31,7 +31,8 @@ import { computed, ref } from 'vue';
 import { adminStore } from '@/stores/admin';
 import { useRoute, useRouter } from 'vue-router';
 import { ElMessageBox } from 'element-plus';
-import {ElMessage} from 'element-plus';
+import { ElMessage } from 'element-plus';
+import {Logout} from '@/api/admin.js'
 const route = useRoute()
 const router = useRouter()
 const changeCollapse = () => {
@@ -47,15 +48,16 @@ const handleLogout = () => {
             type: 'warning',
         }
     ).then(() => {
-        router.push('/auth/login')
-        localStorage.removeItem('token')
-        localStorage.removeItem('userInfo')
-        ElMessage({
-            type: 'success',
-            message: '登出成功',
+        Logout().then(res => {
+            router.push('/auth/login')
+            localStorage.removeItem('token')
+            localStorage.removeItem('userInfo')
+            ElMessage({
+                type: 'success',
+                message: '登出成功',
+            })
         })
     })
-    
 }
 </script>
 <style scoped>

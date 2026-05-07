@@ -15,7 +15,7 @@
     </div>
 </template>
 <script setup>
-const pic = new URL('@/assets/机器人.png', import.meta.url).href
+const pic = new URL('@/assets/robot-fill.png', import.meta.url).href
 </script>
 <style lang="scss" scoped>
 .auth-layout {

@@ -1,13 +1,193 @@
-<template lang="">
-    <div>
-        
+<template>
+    <div class="emotionDiary-container">
+        <div class="header-section">
+            <div class="header-content">
+                <el-image :src="imgUrl" style="width: 60px;height: 60px;"></el-image>
+                <h1>情绪日志</h1>
+            </div>
+        </div>
+        <div class="content">
+            <div class="diary-card">
+                <div class="title">今日情绪评分</div>
+                <p style="color: grey;">您今天的整体情绪状态如何(1-10分)</p>
+                <div class="rate">
+                    <el-rate v-model="diaryData.moodScore" :texts="emotionStatus" show-text :max="10"
+                        size="large"></el-rate>
+                </div>
+            </div>
+            <div class="diary-card">
+                <div class="title">主要情绪</div>
+                <div class="emotion-grid">
+                    <div v-for="emotion in emotionOptions"
+                        :class="{ 'selected': emotion.name == diaryData.dominantEmotion }" :key="emotion.name"
+                        class="emotion-card" @click="selectEmotion(emotion.name)">
+                        <el-image :src="emotion.url" style="width: 50px;
+                        height: 50px;"></el-image>
+                        <div class="emotion-name">{{ emotion.name }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="diary-card">
+                <div class="title">详细记录</div>
+                <div class="detail-form">
+                    <div class="form-group">
+                        <div class="form-label">情绪触发因素</div>
+                        <el-input v-model="diaryData.emotionTriggers" placeholder="今天什么事情影响了您的情绪？" type="textarea"
+                            :rows="5" maxLength="1000" show-word-limit></el-input>
+                    </div>
+                    <div class="form-group">
+                        <div class="form-label">今日感想</div>
+                        <el-input v-model="diaryData.emotionTriggers" placeholder="今天什么事情影响了您的情绪？" type="textarea"
+                            :rows="7" maxLength="2000" show-word-limit></el-input>
+                    </div>
+                    <div class="life-indicators">
+                        <div class="indicator-group">
+                            <div class="form-label">睡眠质量</div>
+                            <el-select v-model="diaryData.sleepQuality" placeholder="请选择">
+                                <el-option label="很差" :value="1"></el-option>
+                                <el-option label="较差" :value="2"></el-option>
+                                <el-option label="一般" :value="3"></el-option>
+                                <el-option label="良好" :value="4"></el-option>
+                                <el-option label="优秀" :value="5"></el-option>
+                            </el-select>
+                        </div>
+                        <div class="indicator-group">
+                            <div class="form-label">睡眠质量</div>
+                            <el-select v-model="diaryData.sleepQuality" placeholder="请选择">
+                                <el-option label="很低" :value="1"></el-option>
+                                <el-option label="较低" :value="2"></el-option>
+                                <el-option label="中等" :value="3"></el-option>
+                                <el-option label="较高" :value="4"></el-option>
+                                <el-option label="很高" :value="5"></el-option>
+                            </el-select>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 </template>
-<script>
-export default {
-    
+<script setup>
+import { ref, computed, onMounted, reactive } from 'vue';
+import { dayjs } from 'element-plus';
+const imgUrl = new URL('@/assets/like.png', import.meta.url).href
+const emotionStatus = ref(['绝望崩溃', '消沉抑郁', '焦虑烦躁', '低落不悦', '平静淡然', '轻松惬意', '愉悦舒心', '欢欣满足', '兴奋欣喜', '极致幸福'])
+const diaryData = reactive({
+    diaryDate: dayjs().format("YYYY-MM-DD"),
+    moodScore: null,
+    dominantEmotion: '',
+    emotionTriggers: '',
+    diaryContent: '',
+    sleepQuality: null,
+    stressLevel: null
+})
+const emotionOptions = [
+    { name: '开心', url: new URL('@/assets/开心.png', import.meta.url).href },
+    { name: '平静', url: new URL('@/assets/平静.png', import.meta.url).href },
+    { name: '焦虑', url: new URL('@/assets/焦虑.png', import.meta.url).href },
+    { name: '悲伤', url: new URL('@/assets/悲伤.png', import.meta.url).href },
+    { name: '兴奋', url: new URL('@/assets/兴奋.png', import.meta.url).href },
+    { name: '疲惫', url: new URL('@/assets/疲惫.png', import.meta.url).href },
+    { name: '惊讶', url: new URL('@/assets/惊讶.png', import.meta.url).href },
+    { name: '困惑', url: new URL('@/assets/困惑.png', import.meta.url).href },
+]
+const selectEmotion = (emotion) => {
+    diaryData.dominantEmotion = emotion
 }
 </script>
-<style lang="">
-    
+<style lang="scss" scoped>
+.emotionDiary-container {
+    background: linear-gradient(135deg, #fafbfc 0%, #f7f9fc 50%, #f2f6fa 100%);
+
+    .header-section {
+        background: linear-gradient(135deg, #7ED321 0%, #F5A623 100%);
+        color: white;
+        padding: 48px;
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    }
+
+    .content {
+        margin: 0 auto;
+        width: 980px;
+        padding: 20px;
+
+        .diary-card {
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+            .title {
+                margin-bottom: 20px;
+                font-size: 25px;
+                font-weight: 600;
+                color: #374151;
+            }
+
+            .section {
+                margin-bottom: 20px;
+
+                p {
+                    font-size: 15px;
+                    color: #6B7280;
+                    margin-bottom: 15px;
+                }
+            }
+
+            .emotion-grid {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+
+                .emotion-card {
+                    padding: 15px;
+                    border: 2px solid #E5E7EB;
+                    border-radius: 15px;
+                    text-align: center;
+                    cursor: pointer;
+                    background: #F9FAFB;
+
+                    .emotion-name {
+                        margin-top: 10px;
+                        padding: 0 75px;
+                        color: #374151;
+                    }
+
+                    &.selected {
+                        border-color: #7ED321;
+                        background: #F0FDF4;
+                        transform: translateY(-3px);
+                    }
+                }
+            }
+
+            .detail-form {
+                .form-label {
+                    margin: 10px 0;
+                    color: #374151;
+                }
+
+                .life-indicators {
+                    display: flex;
+                    gap: 20px;
+
+                    .indicator-group {
+                        flex: 1;
+                    }
+                }
+
+                .action-buttons {
+                    margin-top: 40px
+                }
+            }
+        }
+    }
+}
 </style>

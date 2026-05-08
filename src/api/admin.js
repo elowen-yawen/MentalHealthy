@@ -53,3 +53,21 @@ export function handleComplicateInfo(){
 export function Logout(){
     return service.post('/user/logout')
 }
+export function startSession(data){
+    return service.post('/psychological-chat/session/start',data)
+}
+export function getSessionList(params){
+    return service.get('/psychological-chat/sessions',{params})
+}
+export function sessionDialogDelete(sessionId){
+    return service.delete(`/psychological-chat/sessions/${sessionId}`)
+}
+export function getSessionDetail(sessionId){
+    return service.get(`/psychological-chat/sessions/${sessionId}/messages`)
+}
+export function streamAccept(data){
+    return service.post('/api/psychological-chat/stream',data)
+}
+export function getSessionEmotion(sessionId){
+    return service.get(`/psychological-chat/session/${sessionId}/emotion`)
+}

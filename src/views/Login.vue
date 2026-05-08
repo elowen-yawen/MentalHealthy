@@ -63,6 +63,8 @@ const submitForm = async (formEl) => {
             console.log(data)
             if(data.roleType=="2"){
                 router.push('/back/dashboard')
+            }else if(data.roleType==1){
+                router.push('/home')
             }
         } else {
             console.error("登录失败：未获取到 token");

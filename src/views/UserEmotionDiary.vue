@@ -66,11 +66,12 @@
 
             </div>
         </div>
-    </div>
+    </div>     
 </template>
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
 import { dayjs } from 'element-plus';
+import { useRouter } from 'vue-router';
 const imgUrl = new URL('@/assets/like.png', import.meta.url).href
 const emotionStatus = ref(['绝望崩溃', '消沉抑郁', '焦虑烦躁', '低落不悦', '平静淡然', '轻松惬意', '愉悦舒心', '欢欣满足', '兴奋欣喜', '极致幸福'])
 const diaryData = reactive({

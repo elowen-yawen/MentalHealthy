@@ -50,33 +50,39 @@ const back = [
         }]
     }
 ]
-const front=[
+const front = [
     {
-        path:'/',
-        component:()=>import('@/components/FrontendLayout.vue'),
-        children:[
+        path: '/',
+        component: () => import('@/components/FrontendLayout.vue'),
+        redirect: '/home',
+        children: [
             {
-                path:'home',
-                component:()=>import('@/views/Home.vue')
+                path: 'home',
+                component: () => import('@/views/Home.vue')
             },
             {
-                path:'consulation',
-                component:()=>import('@/views/UserConsulation.vue')
+                path: 'consulation',
+                component: () => import('@/views/UserConsulation.vue')
             },
             {
-                path:'/emotion-diary',
-                component:()=>import('@/views/UserEmotionDiary.vue')
+                path: '/emotion-diary',
+                component: () => import('@/views/UserEmotionDiary.vue')
             },
             {
-                path:'knowledge',
-                component:()=>import('@/views/UserKnowledge.vue')
+                path: 'knowledge',
+                component: () => import('@/views/UserKnowledge.vue')
+            }, {
+                path: 'knowledge/article/:id',
+                component: () => import('@/views/ArticleDetail.vue'),
+                props: true
+
             }
         ]
     }
 ]
 const router = createRouter({
     history: createWebHistory(),
-    routes: [...back,...front]
+    routes: [...back, ...front]
 })
 
 //前置守卫
@@ -91,16 +97,16 @@ router.beforeEach((to, from, next) => {
                 next('/back/dashboard')
             }
         } else if (userInfo.userType == 1) {
-            if(to.path.startsWith('/back')||to.path.startsWith('/auth')){
+            if (to.path.startsWith('/back') || to.path.startsWith('/auth')) {
                 next('/')
-            }else{
+            } else {
                 next()
             }
         }
     } else {
         if (to.path.startsWith('/back')) {
             next('/auth/login')
-        }else{
+        } else {
             next()
         }
     }

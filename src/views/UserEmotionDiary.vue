@@ -37,7 +37,7 @@
                     </div>
                     <div class="form-group">
                         <div class="form-label">今日感想</div>
-                        <el-input v-model="diaryData.emotionTriggers" placeholder="今天什么事情影响了您的情绪？" type="textarea"
+                        <el-input v-model="diaryData.diaryContent" placeholder="写下今天的想法，感受发生的有趣的事情" type="textarea"
                             :rows="7" maxLength="2000" show-word-limit></el-input>
                     </div>
                     <div class="life-indicators">
@@ -52,8 +52,8 @@
                             </el-select>
                         </div>
                         <div class="indicator-group">
-                            <div class="form-label">睡眠质量</div>
-                            <el-select v-model="diaryData.sleepQuality" placeholder="请选择">
+                            <div class="form-label">压力水平</div>
+                            <el-select v-model="diaryData.stressLevel" placeholder="请选择">
                                 <el-option label="很低" :value="1"></el-option>
                                 <el-option label="较低" :value="2"></el-option>
                                 <el-option label="中等" :value="3"></el-option>
@@ -61,17 +61,24 @@
                                 <el-option label="很高" :value="5"></el-option>
                             </el-select>
                         </div>
+
+                    </div>
+                    <div class="action-buttons">
+                        <el-button @click="resetForm">重置</el-button>
+                        <el-button @click="submitForm" type="primary">提交记录</el-button>
                     </div>
                 </div>
 
             </div>
         </div>
-    </div>     
+    </div>
 </template>
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
 import { dayjs } from 'element-plus';
 import { useRouter } from 'vue-router';
+import ElMessage from 'element-plus';
+import { submitDiaryData } from '@/api/admin';
 const imgUrl = new URL('@/assets/like.png', import.meta.url).href
 const emotionStatus = ref(['绝望崩溃', '消沉抑郁', '焦虑烦躁', '低落不悦', '平静淡然', '轻松惬意', '愉悦舒心', '欢欣满足', '兴奋欣喜', '极致幸福'])
 const diaryData = reactive({
@@ -95,6 +102,26 @@ const emotionOptions = [
 ]
 const selectEmotion = (emotion) => {
     diaryData.dominantEmotion = emotion
+}
+const resetForm = () => {
+    Object.assign(diaryData, {
+        diaryDate: dayjs().format("YYYY-MM-DD"),
+        moodScore: null,
+        dominantEmotion: '',
+        emotionTriggers: '',
+        diaryContent: '',
+        sleepQuality: null,
+        stressLevel: null
+    })
+}
+const submitForm = () => {
+    if(!diaryData.moodScore){
+        ElMessage.error("请选择情绪评分");
+        return
+    }
+    submitDiaryData(diaryData).then(res=>{
+        resetForm()
+    })
 }
 </script>
 <style lang="scss" scoped>

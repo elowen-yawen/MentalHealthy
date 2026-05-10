@@ -50,7 +50,8 @@
 import { ref, computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { Logout } from '@/api/admin.js'
-
+import { ElMessageBox } from 'element-plus';
+import ElMessage from 'element-plus';
 const logIn = ref(true)
 onMounted(() => {
     const token = localStorage.getItem('token')
@@ -79,10 +80,6 @@ const handleLogout = () => {
             router.push('/auth/login')
             localStorage.removeItem('token')
             localStorage.removeItem('userInfo')
-            ElMessage({
-                type: 'success',
-                message: '登出成功',
-            })
         })
     })
 }

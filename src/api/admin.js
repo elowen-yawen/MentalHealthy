@@ -71,3 +71,12 @@ export function streamAccept(data){
 export function getSessionEmotion(sessionId){
     return service.get(`/psychological-chat/session/${sessionId}/emotion`)
 }
+export function submitDiaryData(data){
+    return service.post('/emotion-diary',data)
+}
+export function getKnowledgeData(data){
+    return service.get('/knowledge/article/page',{params:data})
+}
+export function getKnowledgeDetail(id){
+    return service.get(`/knowledge/article/${id}`)
+}
